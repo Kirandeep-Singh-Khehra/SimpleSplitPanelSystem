@@ -1,5 +1,5 @@
 /******************************************************************\
- * SplitPanel - Simple backend implementation of dynamic split 
+ * SplitPanel - Simple backend implementation of dynamic split
  *   based panel system in c.
  *
  * Source:
@@ -17,21 +17,12 @@
 #define new_(x) (x*)malloc(sizeof(x))
 
 /****** DATA_STRUCTURES ******/
+
+/* 2D point implementation */
 typedef struct Point {
   float *x;
   float *y;
 } Point;
-
-Point CreatePoint(float x, float y) {
-  Point p;
-  p.x = new_(float);
-  p.y = new_(float);
-
-  *p.x = x;
-  *p.y = y;
-
-  return p;
-}
 
 typedef struct Panel {
   Point *origin;
@@ -51,14 +42,35 @@ typedef enum PanelSplitType {
 /****** FUNCTION_DECALRATIONS ******/
 
 /*
+Creates a point.
+
+Input:
+  `float x`: abscissa value of point.
+  `float y`: ordinate value of point.
+
+Output:
+  Returns a `Point`.
+*/
+Point CreatePoint(float x, float y) {
+  Point p;
+  p.x = new_(float);
+  p.y = new_(float);
+
+  *p.x = x;
+  *p.y = y;
+
+  return p;
+}
+
+/*
 Creates a panel from given points.
 
 Input:
-  Point origin: Coordinates of top left corner of panel.
-  Point end: Coordinates of bottom right corner of panel.
+  `Point origin`: Coordinates of top left corner of panel.
+  `Point end`: Coordinates of bottom right corner of panel.
 
 Output:
-  Returns an instance of struct panel.
+  Returns an instance of `struct panel`.
 */
 Panel CreatePanel(Point origin, Point end);
 
@@ -68,9 +80,9 @@ New panel is formed on right of given panel for horizontal split and on
  bottom for given panel for vertical split.
 
 Input:
-  Panel *panel: pointer to Panel to split.
-  enum PanelSplitType splitType: Direction of split.
-      Choose from PANEL_SPLIT_TYPE_VERTICAL and PANEL_SPLIT_TYPE_HORIZONTAL
+  `Panel *panel`: pointer to Panel to split.
+  `enum PanelSplitType splitType`: Direction of split.
+      Choose from `PANEL_SPLIT_TYPE_VERTICAL` and `PANEL_SPLIT_TYPE_HORIZONTAL`
 
 Output:
   Returns an instance of `struct Panel`.

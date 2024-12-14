@@ -88,7 +88,6 @@ void cli_test() {
                         *panels[panelid].end->y = amt;
                         break;
                     }
-          
         }
 
         break;
