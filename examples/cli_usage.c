@@ -31,8 +31,8 @@ void PrintPoint(Point v) {
 
 void PrintPanel(Panel p) {
   printf("[");
-  PrintPoint(*p.origin);
-  PrintPoint(*p.end);
+  PrintPoint(p.origin);
+  PrintPoint(p.end);
   printf("]\n");
 }
 
@@ -58,9 +58,9 @@ void cli_test() {
         scanf("%d", &panelid);
         scanf(" %c", &c2);
         c2 = (c2 == 'V')? PANEL_SPLIT_TYPE_VERTICAL : (c2 == 'H')? PANEL_SPLIT_TYPE_HORIZONTAL : c2;
-        Panel *p = SplitPanel(&panels[panelid], c2);
-        if (p != NULL) {
-          panels[panels_len++] = *p;
+        Panel p = SplitPanel(&panels[panelid], c2);
+        if (p.origin.x != NULL && p.origin.y && p.end.x && p.end.y) {
+          panels[panels_len++] = p;
         }
         break;
       case 'M':
@@ -73,21 +73,23 @@ void cli_test() {
           case 'o':
                     switch (c3) {
                       case 'x':
-                        *panels[panelid].origin->x = amt;
+                        *panels[panelid].origin.x = amt;
                         break;
                       case 'y':
-                        *panels[panelid].origin->y = amt;
+                        *panels[panelid].origin.y = amt;
                         break;
                     }
+                    break;
           case 'e':
                     switch (c3) {
                       case 'x':
-                        *panels[panelid].end->x = amt;
+                        *panels[panelid].end.x = amt;
                         break;
                       case 'y':
-                        *panels[panelid].end->y = amt;
+                        *panels[panelid].end.y = amt;
                         break;
                     }
+                    break;
         }
 
         break;

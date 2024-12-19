@@ -25,18 +25,15 @@ typedef struct Point {
 } Point;
 
 typedef struct Panel {
-  Point *origin;
-  Point *end;
+  Point origin;
+  Point end;
 
   void (*panelContent)(void *);
 } Panel;
 
 typedef enum PanelSplitType {
-  PANEL_SPLIT_TYPE_NONE,
   PANEL_SPLIT_TYPE_VERTICAL,
   PANEL_SPLIT_TYPE_HORIZONTAL,
-
-  PANEL_SPLIT_TYPE_COUNT
 } PanelSplitType;
 
 /****** FUNCTION_DECALRATIONS ******/
@@ -87,51 +84,60 @@ Input:
 Output:
   Returns an instance of `struct Panel`.
 */
-Panel* SplitPanel(Panel *panel, PanelSplitType splitType);
+Panel SplitPanel(Panel *panel, PanelSplitType splitType);
 
 /****** IMPLEMENTATION ******/
 
 Panel CreatePanel(Point origin, Point end) {
-  Panel panel = {};
-  panel.origin = new_(Point);
-  *panel.origin = origin;
-  panel.end = new_(Point);
-  *panel.end = end;
+  Panel panel = {0};
+
+  panel.origin.x = new_(float);
+  panel.origin.y = new_(float);
+
+  *panel.origin.x = *origin.x;
+  *panel.origin.y = *origin.y;
+
+  panel.end.x = new_(float);
+  panel.end.y = new_(float);
+
+  *panel.end.x = *end.x;
+  *panel.end.y = *end.y;
 
   return panel;
 }
 
-Panel* SplitPanel(Panel *panel, PanelSplitType splitType) {
-  if (!panel || (splitType != PANEL_SPLIT_TYPE_VERTICAL && splitType != PANEL_SPLIT_TYPE_HORIZONTAL)) {
-    return NULL;
+Panel SplitPanel(Panel *panel, PanelSplitType splitType) {
+  if (!panel || !panel->origin.x || !panel->end.x || !panel->end.y
+  || (splitType != PANEL_SPLIT_TYPE_VERTICAL && splitType != PANEL_SPLIT_TYPE_HORIZONTAL)) {
+    return (Panel){0};
   }
 
-  Panel *newPanel = new_(Panel);
-  newPanel->origin = new_(Point);
-  newPanel->end = new_(Point);
-  *newPanel->origin = CreatePoint(0.0f, 0.0f);
-  *newPanel->end = CreatePoint(0.0f, 0.0f);
+  Panel newPanel = {0};
+  newPanel.origin.x = new_(float);
+  newPanel.origin.y = new_(float);
 
-  newPanel->end = panel->end;
-  panel->end = new_(Point);
-  *panel->end = CreatePoint(0.0f, 0.0f);
+  newPanel.end.x = panel->end.x;
+  newPanel.end.y = panel->end.y;
+
+  panel->end.x = new_(float);
+  panel->end.y = new_(float);
 
   switch(splitType) {
     case PANEL_SPLIT_TYPE_HORIZONTAL:
-      panel->end->x = newPanel->end->x;
-      panel->end->y = new_(float);
-      *panel->end->y = (*panel->origin->y + *newPanel->end->y) / 2.0f;
+      panel->end.x = newPanel.end.x;
+      panel->end.y = new_(float);
+      *panel->end.y = (*panel->origin.y + *newPanel.end.y) / 2.0f;
 
-      newPanel->origin->x = panel->origin->x;
-      newPanel->origin->y = panel->end->y;
+      newPanel.origin.x = panel->origin.x;
+      newPanel.origin.y = panel->end.y;
       break;
     case PANEL_SPLIT_TYPE_VERTICAL:
-      panel->end->y = newPanel->end->y;
-      panel->end->x = new_(float);
-      *panel->end->x = (*panel->origin->x + *newPanel->end->x) / 2.0f;;
+      panel->end.y = newPanel.end.y;
+      panel->end.x = new_(float);
+      *panel->end.x = (*panel->origin.x + *newPanel.end.x) / 2.0f;;
 
-      newPanel->origin->y = panel->origin->y;
-      newPanel->origin->x = panel->end->x;
+      newPanel.origin.y = panel->origin.y;
+      newPanel.origin.x = panel->end.x;
       break;
   }
 
