@@ -56,6 +56,9 @@ Panel newPanel = SplitPanel(&basePanel, PANEL_SPLIT_TYPE_HORIZONTAL);
 printf("%f", *newPanel.origin.x); // 10.0f
 ```
 
+## [GUI example](https://github.com/Kirandeep-Singh-Khehra/SimpleSplitPanelSystem/blob/main/examples/raygui_impl/raygui_impl.c) using [raygui](https://github.com/raysan5/raygui)
+<img src="/examples/raygui_impl/raygui_impl.png" alt="RayGUI Panel Demo"/>
+
 ## Roadmap
 1. Remove as much pointer usage as possible.
 2. Add ability to remove panel.
