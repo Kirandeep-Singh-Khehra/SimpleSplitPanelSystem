@@ -16,7 +16,7 @@ Input:
 Output:
   Returns an instance of `struct panel`.
 
-### `Panel* SplitPanel(Panel *panel, PanelSplitType splitType);`
+### `Panel SplitPanel(Panel *panel, PanelSplitType splitType);`
 Splits a `Panel` vertically or horizontally and return new `Panel` formed.
 New panel is formed on right of given panel for horizontal split and on
  bottom for given panel for vertical split.
@@ -27,7 +27,7 @@ Input:
       Choose from PANEL_SPLIT_TYPE_VERTICAL and PANEL_SPLIT_TYPE_HORIZONTAL
 
 Output:
-  Returns an instance of `struct Panel*`.
+  Returns an instance of `struct Panel`.
 
 ## Example usage
 1. Include the `split_panel.h` file in your code.
@@ -42,18 +42,18 @@ Panel basePanel = CreatePanel(origin, end)
 3. To Split the panel use `SplitPanel()` function.
 ```c
 // Split panel vertically
-Panel newPanel = *SplitPanel(&basePanel, PANEL_SPLIT_TYPE_VERTICAL);
+Panel newPanel = SplitPanel(&basePanel, PANEL_SPLIT_TYPE_VERTICAL);
 
 // Split panel horizontally
-Panel newPanel = *SplitPanel(&basePanel, PANEL_SPLIT_TYPE_HORIZONTAL);
+Panel newPanel = SplitPanel(&basePanel, PANEL_SPLIT_TYPE_HORIZONTAL);
 ```
 4. To modify the split simply modify any point of any panel.
 ```c
 // Modify origin's 'x' of 'basePanel'.
-basePanel.origin->x = 10.0f;
+*basePanel.origin.x = 10.0f;
 
 // Other panels also get the changes as common ordinates share address.
-printf("%f", *newPanel.origin->x); // 10.0f
+printf("%f", *newPanel.origin.x); // 10.0f
 ```
 
 ## Roadmap

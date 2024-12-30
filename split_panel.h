@@ -28,7 +28,8 @@ typedef struct Panel {
   Point origin;
   Point end;
 
-  void (*panelContent)(void *);
+  void *data;
+  void (*callback)(struct Panel panel, void *data, ...);
 } Panel;
 
 typedef enum PanelSplitType {
@@ -142,6 +143,12 @@ Panel SplitPanel(Panel *panel, PanelSplitType splitType) {
   }
 
   return newPanel;
+}
+
+void UpdatePanel(Panel panel) {
+  if (panel.callback) {
+    panel.callback(panel, panel.data);
+  }
 }
 
 #endif
