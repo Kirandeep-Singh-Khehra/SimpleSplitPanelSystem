@@ -31,17 +31,27 @@ void SimplePanelCallBack(Panel panel, void *data, ...) {
   GuiButton((Rectangle){ *panel.origin.x + 10, *panel.origin.y + 10, 120, 30 }, "#191#Sample Button");
 }
 
+void SimplePanelCallBackDraw(Panel panel, void *data, ...) {
+  Rectangle rec = GetPanelRectangle(panel);
+  GuiButton((Rectangle){rec.x + 10, rec.y + 34, 100, 50}, "Hello");
+}
+
 void OnStart() {
   windowOrigin = CreatePoint(0.0f, 0.0f);
   windowEnd = CreatePoint(WINDOW_WIDTH, WINDOW_HEIGHT);
   panels[0] = CreatePanel(windowOrigin, windowEnd);
-  panels[0].callback = SimplePanelCallBack;
+  panels[0].numOfCallbacks = 2;
+  panels[0].callbacks = malloc(sizeof(PanelCallback) * panels[0].numOfCallbacks);
+  panels[0].callbacks[0] = SimplePanelCallBack;
+  panels[0].callbacks[1] = SimplePanelCallBackDraw;
   panel_count = 1;
 }
 
 void OnUpdate() {
   for (int i = 0; i < panel_count; i++) {
-    UpdatePanel(panels[i]);
+    if (panels[i].callbacks[0]) {
+      panels[i].callbacks[0](panels[i], panels[i].data);
+    }
 
     if (IsPanelHovered(panels[i]) &&
         focussedPanelState != PANEL_STATE_DECIDING_SPLIT &&
@@ -71,14 +81,20 @@ void OnUpdate() {
         focussedPanelState = PANEL_STATE_MOVING;
         currentSplitType = PANEL_SPLIT_TYPE_VERTICAL;
         panels[panel_count ++] = SplitPanel(&panels[focussedPanelIndex], currentSplitType);
-        panels[panel_count - 1].callback = SimplePanelCallBack;
+        panels[panel_count - 1].numOfCallbacks = 2;
+        panels[panel_count - 1].callbacks = malloc(sizeof(PanelCallback) * panels[panel_count - 1].numOfCallbacks);
+        panels[panel_count - 1].callbacks[0] = SimplePanelCallBack;
+        panels[panel_count - 1].callbacks[1] = SimplePanelCallBackDraw;
         focussedPoint.x = panels[focussedPanelIndex].end.x;
         focussedPoint.y = NULL;
       } else {
         focussedPanelState = PANEL_STATE_MOVING;
         currentSplitType = PANEL_SPLIT_TYPE_HORIZONTAL;
         panels[panel_count ++] = SplitPanel(&panels[focussedPanelIndex], currentSplitType);
-        panels[panel_count - 1].callback = SimplePanelCallBack;
+        panels[panel_count - 1].numOfCallbacks = 2;
+        panels[panel_count - 1].callbacks = malloc(sizeof(PanelCallback) * panels[panel_count - 1].numOfCallbacks);
+        panels[panel_count - 1].callbacks[0] = SimplePanelCallBack;
+        panels[panel_count - 1].callbacks[1] = SimplePanelCallBackDraw;
         focussedPoint.x = NULL;
         focussedPoint.y = panels[panel_count - 1].origin.y;
       }

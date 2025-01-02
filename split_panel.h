@@ -18,6 +18,9 @@
 
 /****** DATA_STRUCTURES ******/
 
+struct Panel;
+typedef void (*PanelCallback)(struct Panel panel, void *data, ...);
+
 /* 2D point implementation */
 typedef struct Point {
   float *x;
@@ -29,7 +32,8 @@ typedef struct Panel {
   Point end;
 
   void *data;
-  void (*callback)(struct Panel panel, void *data, ...);
+  PanelCallback *callbacks;
+  int numOfCallbacks;
 } Panel;
 
 typedef enum PanelSplitType {
@@ -104,6 +108,9 @@ Panel CreatePanel(Point origin, Point end) {
   *panel.end.x = *end.x;
   *panel.end.y = *end.y;
 
+  panel.callbacks = NULL;
+  panel.numOfCallbacks = 0;
+
   return panel;
 }
 
@@ -142,13 +149,23 @@ Panel SplitPanel(Panel *panel, PanelSplitType splitType) {
       break;
   }
 
+  newPanel.callbacks = NULL;
+  newPanel.numOfCallbacks = 0;
+
   return newPanel;
 }
 
-void UpdatePanel(Panel panel) {
-  if (panel.callback) {
-    panel.callback(panel, panel.data);
-  }
+void AddPanelCallback(Panel *panel, void (*callback)(Panel, void *, ...)) {
+    if (panel->callbacks == NULL) {
+      panel->callbacks = (PanelCallback*)malloc(sizeof(PanelCallback));
+      panel->numOfCallbacks = 1;
+    } else {
+      panel->callbacks = (PanelCallback*)realloc(panel->callbacks, (panel->numOfCallbacks + 1) * sizeof(void (*)(Panel, void *, ...)));
+    }
+    if (panel->callbacks == NULL) {
+        exit(1);
+    }
+    panel->callbacks[panel->numOfCallbacks++] = callback;
 }
 
 #endif
