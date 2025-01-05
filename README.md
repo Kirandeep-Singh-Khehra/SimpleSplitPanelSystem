@@ -59,7 +59,7 @@ printf("%f", *newPanel.origin.x); // 10.0f
 ## [GUI simple example](https://github.com/Kirandeep-Singh-Khehra/SimpleSplitPanelSystem/blob/main/examples/raygui_impl/raygui_impl.c) using [raygui](https://github.com/raysan5/raygui)
 <img src="/examples/raygui_impl/raygui_impl.png" alt="RayGUI Panel Demo"/>
 
-## [GUI example better](https://github.com/Kirandeep-Singh-Khehra/SimpleSplitPanelSystem/blob/main/examples/raygui_impl/raygui_impl.c) using [raygui](https://github.com/raysan5/raygui)
+## [GUI example better](https://github.com/Kirandeep-Singh-Khehra/SimpleSplitPanelSystem/blob/main/examples/raygui_impl_better/raygui_impl.c) using [raygui](https://github.com/raysan5/raygui)
 <img src="/examples/raygui_impl_better/raygui_impl_better.png" alt="RayGUI Panel Demo"/>
 
 ## Roadmap
