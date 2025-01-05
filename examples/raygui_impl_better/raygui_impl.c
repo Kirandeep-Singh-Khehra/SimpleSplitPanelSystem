@@ -68,6 +68,8 @@ void OnStart() {
   panels[0].callbacks = panelViews[0].callbacks;
   panels[0].numOfCallbacks = 4;
 
+  PanelRunCallBack(panels[0], CALLBACK_START);
+
   panel_count = 1;
 
   windowOrigin = panels[0].origin;
@@ -82,9 +84,7 @@ void OnUpdate() {
   *windowEnd.y = *windowOrigin.y + GetScreenHeight();
 
   for (int i = 0; i < panel_count; i++) {
-    if (panels[i].callbacks && panels[i].callbacks[CALLBACK_UPDATE]) {
-      panels[i].callbacks[CALLBACK_UPDATE](panels[i], panels[i].data);
-    }
+    PanelRunCallBack(panels[i], CALLBACK_UPDATE);
 
     if (IsPanelHovered(panels[i]) &&
         focussedPanelState != PANEL_STATE_DECIDING_SPLIT &&
@@ -122,6 +122,8 @@ void OnUpdate() {
         panels[panel_count - 1].callbacks = panels[focussedPanelIndex].callbacks;
         panels[panel_count - 1].numOfCallbacks = 4;
 
+        PanelRunCallBack(panels[panel_count - 1], CALLBACK_START);
+
         focussedPoint.x = panels[focussedPanelIndex].end.x;
         focussedPoint.y = NULL;
       } else {
@@ -135,6 +137,8 @@ void OnUpdate() {
 
         panels[panel_count - 1].callbacks = panels[focussedPanelIndex].callbacks;
         panels[panel_count - 1].numOfCallbacks = 4;
+
+        PanelRunCallBack(panels[panel_count - 1], CALLBACK_START);
 
         focussedPoint.x = NULL;
         focussedPoint.y = panels[panel_count - 1].origin.y;
@@ -196,9 +200,9 @@ void DrawPanel(Panel *panel) {
     GuiPanel(rec, panelViews[((PanelData*)panel->data)->menu.active].name);
     GuiLabel(GetPanelAchorRectangle(*panel), GuiIconText(0x6B, ""));
     BeginScissorMode(rec.x, rec.y + 24.0f, rec.width, rec.height - 24.0f);
-    if (panel->callbacks && panel->callbacks[CALLBACK_DRAW]) {
-        panel->callbacks[CALLBACK_DRAW](*panel, panel->data);
-    }
+
+    PanelRunCallBack(panels[0], CALLBACK_DRAW);
+
     EndScissorMode();
 
     char list[panelViewCount * MAX_PANEL_NAME_LENGTH];
@@ -216,11 +220,15 @@ void DrawPanel(Panel *panel) {
       int prevActive = ((PanelData*)panel->data)->menu.active;
       GuiListView(menuRec, list, &((PanelData*)panel->data)->menu.scrollIndex, &((PanelData*)panel->data)->menu.active);//, &((PanelData*)panel.data)->menu.focus);
       if (prevActive != ((PanelData*)panel->data)->menu.active) {
+        PanelRunCallBack(*panel, CALLBACK_END);
+
         int currActive = ((PanelData*)panel->data)->menu.active;
 
         ((PanelData*)panel->data)->data = panelViews[currActive].data;
         panel->callbacks = panelViews[currActive].callbacks;
         panel->numOfCallbacks = 4;
+
+        PanelRunCallBack(*panel, CALLBACK_START);
       }
     }
 
@@ -243,5 +251,9 @@ void OnDraw() {
   }
 }
 
-void OnEnd() {}
+void OnEnd() {
+  for (int i = 0; i < panel_count; i++) {
+    PanelRunCallBack(panels[i], CALLBACK_END);
+  }
+}
 

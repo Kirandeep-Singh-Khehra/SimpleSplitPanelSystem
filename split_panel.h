@@ -168,5 +168,11 @@ void AddPanelCallback(Panel *panel, void (*callback)(Panel, void *, ...)) {
     panel->callbacks[panel->numOfCallbacks++] = callback;
 }
 
+void PanelRunCallBack(Panel panel, int n) {
+  if (panel.callbacks && panel.callbacks[n]) {
+    panel.callbacks[n](panel, panel.data);
+  }
+}
+
 #endif
 
